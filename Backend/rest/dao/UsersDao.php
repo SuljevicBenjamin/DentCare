@@ -1,6 +1,7 @@
 <?php
 require_once 'BaseDao.php';
 
+
 class UsersDao extends BaseDao {
     protected $table_name;
 
@@ -32,4 +33,4 @@ class UsersDao extends BaseDao {
 
 }
 ?>
-
+ 
