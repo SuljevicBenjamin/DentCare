@@ -117,3 +117,4 @@ print_r($appointmentsDao->getAll());
 echo "\n--- CONTACT MESSAGES ---\n";
 print_r($contactMessagesDao->getAll());
 ?>
+ 
