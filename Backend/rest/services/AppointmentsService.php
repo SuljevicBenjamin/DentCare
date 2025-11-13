@@ -16,7 +16,7 @@ require_once __DIR__ . '/../dao/AppointmentsDao.php';
     public function getAppointmentById($appointment_id) {
         $appointment = $this->dao->getByIdLocal($appointment_id);
         if (!$appointment) {
-            throw new Exception("Appointment not found");
+            throw new Exception("Appointment with ID " . $appointment_id . " not found");
         }
         return $appointment;
     }
@@ -36,7 +36,7 @@ require_once __DIR__ . '/../dao/AppointmentsDao.php';
     public function updateAppointment($appointment_id, $data) {
         $existing = $this->dao->getByIdLocal($appointment_id);
         if (!$existing) {
-            throw new Exception("Appointment not found");
+            throw new Exception("Appointment with ID " . $appointment_id . " not found");
         }
         return $this->dao->updateAppointment($data, $appointment_id, 'appointment_id');
     }
@@ -44,7 +44,7 @@ require_once __DIR__ . '/../dao/AppointmentsDao.php';
     public function deleteAppointment($appointment_id) {
         $existing = $this->dao->getByIdLocal($appointment_id);
         if (!$existing) {
-            throw new Exception("Appointment not found");
+            throw new Exception("Appointment with ID " . $appointment_id . " not found");
         }
         return $this->dao->deleteById($appointment_id);
     }
