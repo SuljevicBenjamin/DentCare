@@ -27,7 +27,7 @@ class DentistsDao extends BaseDao {
     }
 
     public function updateDentists($entity, $id, $id_column = "id"){
-        return $this->update($entity, $id, $id_column = "id");
+        return $this->update($entity, $id, $id_column);
     }
 
 }

@@ -7,11 +7,7 @@
  *     description="Retrieve a list of all users (passwords are excluded from response)",
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved users",
- *         @OA\JsonContent(
- *             type="array",
- *             @OA\Items(ref="#/components/schemas/User")
- *         )
+ *         description="Successfully retrieved users"
  *     )
  * )
  */
@@ -34,8 +30,7 @@ Flight::route('GET /users', function(){
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved user",
- *         @OA\JsonContent(ref="#/components/schemas/User")
+ *         description="Successfully retrieved user"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -62,8 +57,7 @@ Flight::route('GET /users/@id', function($id){
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved user",
- *         @OA\JsonContent(ref="#/components/schemas/User")
+ *         description="Successfully retrieved user"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -83,12 +77,17 @@ Flight::route('GET /users/email/@email', function($email){
  *     description="Create a new user (password is automatically hashed and excluded from response)",
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/UserInput")
+ * @OA\JsonContent(
+ *             required={"full_name", "email", "password", "role"},
+ *             @OA\Property(property="full_name", type="string", example="Pero Peric"),
+ *             @OA\Property(property="email", type="string", example="pero.peric@example.com"),
+ *             @OA\Property(property="password", type="string", example="password"),
+ *             @OA\Property(property="role", type="string", example="user")
+ *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="User created successfully",
- *         @OA\JsonContent(ref="#/components/schemas/User")
+ *         description="User created successfully"
  *     ),
  *     @OA\Response(
  *         response=400,
@@ -116,12 +115,17 @@ Flight::route('POST /users', function(){
  *     ),
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/UserInput")
+ * @OA\JsonContent(
+ *             required={"full_name", "email", "password", "role"},
+ *             @OA\Property(property="full_name", type="string", example="Pero Peric"),
+ *             @OA\Property(property="email", type="string", example="pero.peric@example.com"),
+ *             @OA\Property(property="password", type="string", example="password"),
+ *             @OA\Property(property="role", type="string", example="user")
+ *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="User updated successfully",
- *         @OA\JsonContent(ref="#/components/schemas/User")
+ *         description="User updated successfully"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -169,24 +173,5 @@ Flight::route('DELETE /users/@id', function($id){
     Flight::json(['message' => "User deleted successfully"]);
 });   
 
-/**
- * @OA\Schema(
- *     schema="User",
- *     type="object",
- *     @OA\Property(property="user_id", type="integer", example=1),
- *     @OA\Property(property="full_name", type="string", example="Benjamin Suljevic"),
- *     @OA\Property(property="email", type="string", format="email", example="benjamin@example.com"),
- *     @OA\Property(property="role", type="string", enum={"user", "admin"}, example="admin")
- * )
- * 
- * @OA\Schema(
- *     schema="UserInput",
- *     type="object",
- *     required={"full_name", "email", "password"},
- *     @OA\Property(property="full_name", type="string", example="Benjamin Suljevic"),
- *     @OA\Property(property="email", type="string", format="email", example="benjamin@example.com"),
- *     @OA\Property(property="password", type="string", format="password", example="password123"),
- *     @OA\Property(property="role", type="string", enum={"user", "admin"}, example="user")
- * )
- */
+
 ?>

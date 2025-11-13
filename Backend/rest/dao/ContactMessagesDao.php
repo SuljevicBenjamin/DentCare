@@ -23,7 +23,7 @@ class ContactMessagesDao extends BaseDao {
     }
 
     public function updateContactMessages($entity, $id, $id_column = "id"){
-        return $this->update($entity, $id, $id_column = "id");
+        return $this->update($entity, $id, $id_column);
     }
 
 }

@@ -7,11 +7,7 @@
  *     description="Retrieve a list of all dentists",
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved dentists",
- *         @OA\JsonContent(
- *             type="array",
- *             @OA\Items(ref="#/components/schemas/Dentist")
- *         )
+ *         description="Successfully retrieved dentists"
  *     )
  * )
  */
@@ -34,8 +30,7 @@ Flight::route('GET /dentists', function(){
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved dentist",
- *         @OA\JsonContent(ref="#/components/schemas/Dentist")
+ *         description="Successfully retrieved dentist"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -62,11 +57,7 @@ Flight::route('GET /dentists/@id', function($id){
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved dentists",
- *         @OA\JsonContent(
- *             type="array",
- *             @OA\Items(ref="#/components/schemas/Dentist")
- *         )
+ *         description="Successfully retrieved dentists"
  *     )
  * )
  */
@@ -82,12 +73,15 @@ Flight::route('GET /dentists/specialization/@specialization', function($speciali
  *     description="Create a new dentist",
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/DentistInput")
+ * @OA\JsonContent(
+ *             required={"full_name", "specialization"},
+ *             @OA\Property(property="full_name", type="string", example="Dr. Dino Dinic"),
+ *             @OA\Property(property="specialization", type="string", example="General Dentist")
+ *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Dentist created successfully",
- *         @OA\JsonContent(ref="#/components/schemas/Dentist")
+ *         description="Dentist created successfully"
  *     ),
  *     @OA\Response(
  *         response=400,
@@ -115,12 +109,15 @@ Flight::route('POST /dentists', function(){
  *     ),
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/DentistInput")
+ * @OA\JsonContent(
+ *             required={"name", "location"},
+ *             @OA\Property(property="full_name", type="string", example="Dr. Dino Dinic"),
+ *             @OA\Property(property="specialization", type="string", example="General Dentist")
+ *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Dentist updated successfully",
- *         @OA\JsonContent(ref="#/components/schemas/Dentist")
+ *         description="Dentist updated successfully"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -168,21 +165,5 @@ Flight::route('DELETE /dentists/@id', function($id){
     Flight::json(['message' => "Dentist deleted successfully"]);
 });   
 
-/**
- * @OA\Schema(
- *     schema="Dentist",
- *     type="object",
- *     @OA\Property(property="dentist_id", type="integer", example=1),
- *     @OA\Property(property="full_name", type="string", example="Dr. Dino Dinic"),
- *     @OA\Property(property="specialization", type="string", nullable=true, example="General Dentist")
- * )
- * 
- * @OA\Schema(
- *     schema="DentistInput",
- *     type="object",
- *     required={"full_name"},
- *     @OA\Property(property="full_name", type="string", example="Dr. Dino Dinic"),
- *     @OA\Property(property="specialization", type="string", nullable=true, example="General Dentist")
- * )
- */
+
 ?>

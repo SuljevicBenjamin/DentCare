@@ -27,7 +27,7 @@ class ServicesDao extends BaseDao {
     }
 
     public function updateServices($entity, $id, $id_column = "id"){
-        return $this->update($entity, $id, $id_column = "id");
+        return $this->update($entity, $id, $id_column);
     }
 
 }

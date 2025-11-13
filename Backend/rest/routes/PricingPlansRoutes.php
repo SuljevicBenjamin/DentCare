@@ -7,11 +7,7 @@
  *     description="Retrieve a list of all pricing plans",
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved pricing plans",
- *         @OA\JsonContent(
- *             type="array",
- *             @OA\Items(ref="#/components/schemas/PricingPlan")
- *         )
+ *         description="Successfully retrieved pricing plans"
  *     )
  * )
  */
@@ -34,8 +30,7 @@ Flight::route('GET /pricing-plans', function(){
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved pricing plan",
- *         @OA\JsonContent(ref="#/components/schemas/PricingPlan")
+ *         description="Successfully retrieved pricing plan"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -55,12 +50,16 @@ Flight::route('GET /pricing-plans/@id', function($id){
  *     description="Create a new pricing plan",
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/PricingPlanInput")
+ * @OA\JsonContent(
+ *             required={"name", "location"},
+ *             @OA\Property(property="name", type="string", example="Basic Plan"),
+ *             @OA\Property(property="price", type="float", example=100.00),
+ *             @OA\Property(property="duration_months", type="integer", example=1)
+ *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Pricing plan created successfully",
- *         @OA\JsonContent(ref="#/components/schemas/PricingPlan")
+ *         description="Pricing plan created successfully"
  *     ),
  *     @OA\Response(
  *         response=400,
@@ -88,12 +87,16 @@ Flight::route('POST /pricing-plans', function(){
  *     ),
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/PricingPlanInput")
+ * @OA\JsonContent(
+ *             required={"name", "location"},
+ *             @OA\Property(property="name", type="string", example="Basic Plan"),
+ *             @OA\Property(property="price", type="float", example=100.00),
+ *             @OA\Property(property="duration_months", type="integer", example=1)
+ *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Pricing plan updated successfully",
- *         @OA\JsonContent(ref="#/components/schemas/PricingPlan")
+ *         description="Pricing plan updated successfully"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -141,23 +144,5 @@ Flight::route('DELETE /pricing-plans/@id', function($id){
     Flight::json(['message' => "Pricing plan deleted successfully"]);
 });   
 
-/**
- * @OA\Schema(
- *     schema="PricingPlan",
- *     type="object",
- *     @OA\Property(property="plan_id", type="integer", example=1),
- *     @OA\Property(property="name", type="string", example="Basic Care"),
- *     @OA\Property(property="price", type="number", format="float", example=29.99),
- *     @OA\Property(property="duration_months", type="integer", example=1)
- * )
- * 
- * @OA\Schema(
- *     schema="PricingPlanInput",
- *     type="object",
- *     required={"name", "price", "duration_months"},
- *     @OA\Property(property="name", type="string", example="Basic Care"),
- *     @OA\Property(property="price", type="number", format="float", example=29.99),
- *     @OA\Property(property="duration_months", type="integer", example=1)
- * )
- */
+
 ?>

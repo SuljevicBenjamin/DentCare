@@ -7,11 +7,7 @@
  *     description="Retrieve a list of all appointments",
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved appointments",
- *         @OA\JsonContent(
- *             type="array",
- *             @OA\Items(ref="#/components/schemas/Appointment")
- *         )
+ *         description="Successfully retrieved appointments"
  *     )
  * )
  */
@@ -34,8 +30,7 @@ Flight::route('GET /appointments', function(){
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved appointment",
- *         @OA\JsonContent(ref="#/components/schemas/Appointment")
+ *         description="Successfully retrieved appointment"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -62,11 +57,7 @@ Flight::route('GET /appointments/@id', function($id){
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved appointments",
- *         @OA\JsonContent(
- *             type="array",
- *             @OA\Items(ref="#/components/schemas/Appointment")
- *         )
+ *         description="Successfully retrieved appointments"
  *     )
  * )
  */
@@ -96,11 +87,7 @@ Flight::route('GET /appointments/user/@user_id', function($user_id){
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved appointments",
- *         @OA\JsonContent(
- *             type="array",
- *             @OA\Items(ref="#/components/schemas/Appointment")
- *         )
+ *         description="Successfully retrieved appointments"
  *     )
  * )
  */
@@ -116,12 +103,20 @@ Flight::route('GET /appointments/dentist/@dentist_id/date/@date', function($dent
  *     description="Create a new appointment",
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/AppointmentInput")
+ * @OA\JsonContent(
+*             required={"user_id", "dentist_id", "service_id", "appointment_date", "appointment_time", "status", "notes"},
+ *             @OA\Property(property="user_id", type="integer", example=1),
+ *             @OA\Property(property="dentist_id", type="integer", example=1),
+ *             @OA\Property(property="service_id", type="integer", example=1),
+ *             @OA\Property(property="appointment_date", type="string", example="2025-11-13"),
+ *             @OA\Property(property="appointment_time", type="string", example="10:00:00"),
+ *             @OA\Property(property="status", type="string", example="scheduled"),
+ *             @OA\Property(property="notes", type="string", example="No notes")
+ *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Appointment created successfully",
- *         @OA\JsonContent(ref="#/components/schemas/Appointment")
+ *         description="Appointment created successfully"
  *     ),
  *     @OA\Response(
  *         response=400,
@@ -149,12 +144,20 @@ Flight::route('POST /appointments', function(){
  *     ),
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/AppointmentInput")
+ * @OA\JsonContent(
+ *             required={"user_id", "dentist_id", "service_id", "appointment_date", "appointment_time", "status", "notes"},
+ *             @OA\Property(property="user_id", type="integer", example=1),
+ *             @OA\Property(property="dentist_id", type="integer", example=1),
+ *             @OA\Property(property="service_id", type="integer", example=1),
+ *             @OA\Property(property="appointment_date", type="string", example="2025-11-13"),
+ *             @OA\Property(property="appointment_time", type="string", example="10:00:00"),
+ *             @OA\Property(property="status", type="string", example="scheduled"),
+ *             @OA\Property(property="notes", type="string", example="No notes")
+ *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Appointment updated successfully",
- *         @OA\JsonContent(ref="#/components/schemas/Appointment")
+ *         description="Appointment updated successfully"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -202,31 +205,5 @@ Flight::route('DELETE /appointments/@id', function($id){
     Flight::json(['message' => "Appointment deleted successfully"]);
 });   
 
-/**
- * @OA\Schema(
- *     schema="Appointment",
- *     type="object",
- *     @OA\Property(property="appointment_id", type="integer", example=1),
- *     @OA\Property(property="user_id", type="integer", example=2),
- *     @OA\Property(property="dentist_id", type="integer", example=1),
- *     @OA\Property(property="service_id", type="integer", example=1),
- *     @OA\Property(property="appointment_date", type="string", format="date", example="2025-11-10"),
- *     @OA\Property(property="appointment_time", type="string", format="time", example="10:00:00"),
- *     @OA\Property(property="status", type="string", enum={"scheduled", "completed", "cancelled"}, example="scheduled"),
- *     @OA\Property(property="notes", type="string", example="First cleaning appointment")
- * )
- * 
- * @OA\Schema(
- *     schema="AppointmentInput",
- *     type="object",
- *     required={"appointment_date", "appointment_time"},
- *     @OA\Property(property="user_id", type="integer", example=2),
- *     @OA\Property(property="dentist_id", type="integer", example=1),
- *     @OA\Property(property="service_id", type="integer", example=1),
- *     @OA\Property(property="appointment_date", type="string", format="date", example="2025-11-10"),
- *     @OA\Property(property="appointment_time", type="string", format="time", example="10:00:00"),
- *     @OA\Property(property="status", type="string", enum={"scheduled", "completed", "cancelled"}, example="scheduled"),
- *     @OA\Property(property="notes", type="string", example="First cleaning appointment")
- * )
- */
+
 ?>

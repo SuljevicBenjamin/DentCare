@@ -7,11 +7,7 @@
  *     description="Retrieve a list of all contact messages",
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved contact messages",
- *         @OA\JsonContent(
- *             type="array",
- *             @OA\Items(ref="#/components/schemas/ContactMessage")
- *         )
+ *         description="Successfully retrieved contact messages"
  *     )
  * )
  */
@@ -34,8 +30,7 @@ Flight::route('GET /contact-messages', function(){
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved contact message",
- *         @OA\JsonContent(ref="#/components/schemas/ContactMessage")
+ *         description="Successfully retrieved contact message"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -55,12 +50,18 @@ Flight::route('GET /contact-messages/@id', function($id){
  *     description="Create a new contact message",
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/ContactMessageInput")
+ * @OA\JsonContent(
+ *             required={"user_id", "name", "email", "subject", "message"},
+ *             @OA\Property(property="user_id", type="integer", example=1),
+ *             @OA\Property(property="name", type="string", example="Pero Peric"),
+ *             @OA\Property(property="email", type="string", example="pero.peric@example.com"),
+ *             @OA\Property(property="subject", type="string", example="Subject"),
+ *             @OA\Property(property="message", type="string", example="Message")
+ *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Contact message created successfully",
- *         @OA\JsonContent(ref="#/components/schemas/ContactMessage")
+ *         description="Contact message created successfully"
  *     ),
  *     @OA\Response(
  *         response=400,
@@ -88,12 +89,18 @@ Flight::route('POST /contact-messages', function(){
  *     ),
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/ContactMessageInput")
+ * @OA\JsonContent(
+ *             required={"user_id", "name", "email", "subject", "message"},
+ *             @OA\Property(property="user_id", type="integer", example=1),
+ *             @OA\Property(property="name", type="string", example="Pero Peric"),
+ *             @OA\Property(property="email", type="string", example="pero.peric@example.com"),
+ *             @OA\Property(property="subject", type="string", example="Subject"),
+ *             @OA\Property(property="message", type="string", example="Message")
+ *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Contact message updated successfully",
- *         @OA\JsonContent(ref="#/components/schemas/ContactMessage")
+ *         description="Contact message updated successfully"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -141,28 +148,5 @@ Flight::route('DELETE /contact-messages/@id', function($id){
     Flight::json(['message' => "Contact message deleted successfully"]);
 });   
 
-/**
- * @OA\Schema(
- *     schema="ContactMessage",
- *     type="object",
- *     @OA\Property(property="message_id", type="integer", example=1),
- *     @OA\Property(property="user_id", type="integer", nullable=true, example=2),
- *     @OA\Property(property="name", type="string", example="Amina Hadzic"),
- *     @OA\Property(property="email", type="string", format="email", example="amina@example.com"),
- *     @OA\Property(property="subject", type="string", nullable=true, example="Question about services"),
- *     @OA\Property(property="message", type="string", example="Could you explain more about the whitening process?"),
- *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-11-02T00:23:53+00:00")
- * )
- * 
- * @OA\Schema(
- *     schema="ContactMessageInput",
- *     type="object",
- *     required={"name", "email", "message"},
- *     @OA\Property(property="user_id", type="integer", nullable=true, example=2),
- *     @OA\Property(property="name", type="string", example="Amina Hadzic"),
- *     @OA\Property(property="email", type="string", format="email", example="amina@example.com"),
- *     @OA\Property(property="subject", type="string", nullable=true, example="Question about services"),
- *     @OA\Property(property="message", type="string", example="Could you explain more about the whitening process?")
- * )
- */
+
 ?>

@@ -7,11 +7,7 @@
  *     description="Retrieve a list of all dental services",
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved services",
- *         @OA\JsonContent(
- *             type="array",
- *             @OA\Items(ref="#/components/schemas/Service")
- *         )
+ *         description="Successfully retrieved services"
  *     )
  * )
  */
@@ -34,8 +30,7 @@ Flight::route('GET /services', function(){
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved service",
- *         @OA\JsonContent(ref="#/components/schemas/Service")
+ *         description="Successfully retrieved service"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -62,8 +57,7 @@ Flight::route('GET /services/@id', function($id){
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successfully retrieved service",
- *         @OA\JsonContent(ref="#/components/schemas/Service")
+ *         description="Successfully retrieved service"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -83,12 +77,16 @@ Flight::route('GET /services/name/@name', function($name){
  *     description="Create a new dental service",
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/ServiceInput")
+ * @OA\JsonContent(
+ *             required={"name", "description", "price"},
+ *             @OA\Property(property="name", type="string", example="Dental Check-up & Filling"),
+ *             @OA\Property(property="description", type="string", example="Description"),
+ *             @OA\Property(property="price", type="float", example=100.00)
+ *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Service created successfully",
- *         @OA\JsonContent(ref="#/components/schemas/Service")
+ *         description="Service created successfully"
  *     ),
  *     @OA\Response(
  *         response=400,
@@ -116,12 +114,16 @@ Flight::route('POST /services', function(){
  *     ),
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/ServiceInput")
+ * @OA\JsonContent(
+ *             required={"name", "description", "price"},
+ *             @OA\Property(property="name", type="string", example="Dental Check-up & Filling"),
+ *             @OA\Property(property="description", type="string", example="Description"),
+ *             @OA\Property(property="price", type="float", example=100.00)
+ *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Service updated successfully",
- *         @OA\JsonContent(ref="#/components/schemas/Service")
+ *         description="Service updated successfully"
  *     ),
  *     @OA\Response(
  *         response=404,
@@ -169,23 +171,5 @@ Flight::route('DELETE /services/@id', function($id){
     Flight::json(['message' => "Service deleted successfully"]);
 });   
 
-/**
- * @OA\Schema(
- *     schema="Service",
- *     type="object",
- *     @OA\Property(property="service_id", type="integer", example=1),
- *     @OA\Property(property="name", type="string", example="Dental Check-up & Filling"),
- *     @OA\Property(property="description", type="string", nullable=true, example="Comprehensive dental check-up with cavity filling if needed."),
- *     @OA\Property(property="price", type="number", format="float", example=90.00)
- * )
- * 
- * @OA\Schema(
- *     schema="ServiceInput",
- *     type="object",
- *     required={"name", "price"},
- *     @OA\Property(property="name", type="string", example="Dental Check-up & Filling"),
- *     @OA\Property(property="description", type="string", nullable=true, example="Comprehensive dental check-up with cavity filling if needed."),
- *     @OA\Property(property="price", type="number", format="float", example=90.00)
- * )
- */
+
 ?>
