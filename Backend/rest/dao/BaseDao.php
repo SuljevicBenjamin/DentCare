@@ -81,7 +81,7 @@ class BaseDao
     }
     public function getById($id, $id_column = "id") {
         $stmt = $this->connection->prepare("SELECT * FROM " . $this->table_name . " WHERE " . $id_column . " = :id");
-        $stmt->bindParam(':id', $id);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch();
     }

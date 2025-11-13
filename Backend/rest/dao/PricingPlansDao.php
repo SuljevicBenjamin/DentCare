@@ -23,7 +23,7 @@ class PricingPlansDao extends BaseDao {
     }
 
     public function updatePricingPlans($entity, $id, $id_column = "id"){
-        return $this->update($entity, $id, $id_column = "id");
+        return $this->update($entity, $id, $id_column);
     }
 
 }

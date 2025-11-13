@@ -28,7 +28,7 @@ class UsersDao extends BaseDao {
     }
 
     public function updateUsers($entity, $id, $id_column = "id"){
-        return $this->update($entity, $id, $id_column = "id");
+        return $this->update($entity, $id, $id_column);
     }
 
 }

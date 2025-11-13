@@ -31,7 +31,7 @@ class AppointmentsDao extends BaseDao {
     }
 
     public function updateAppointment($entity, $id, $id_column = "id"){
-        return $this->update($entity, $id, $id_column = "id");
+        return $this->update($entity, $id, $id_column);
     }
 
 }
