@@ -1,0 +1,240 @@
+<style>
+.admin-actions button { margin: 4px; }
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.admin-modal {
+    background: #fff;
+    padding: 16px;
+    border-radius: 6px;
+    max-width: 500px;
+    width: 90%;
+}
+.admin-modal h4 { margin-top: 0; }
+.close-modal { float: right; cursor: pointer; }
+#admin-status { margin-top: 10px; }
+</style>
+
+<div class="container py-4" id="admin-dashboard">
+    <h2 class="mb-3">Admin Dashboard</h2>
+    <p>Manage appointments, users, dentists and services.</p>
+
+    <div class="d-flex flex-wrap gap-2 mb-3" id="admin-entity-buttons">
+        <button type="button" class="btn btn-outline-primary" data-entity="appointments" data-action="open-ops">Appointments</button>
+        <button type="button" class="btn btn-outline-primary" data-entity="users" data-action="open-ops">Users</button>
+        <button type="button" class="btn btn-outline-primary" data-entity="dentists" data-action="open-ops">Dentists</button>
+        <button type="button" class="btn btn-outline-primary" data-entity="services" data-action="open-ops">Services</button>
+    </div>
+
+    <div id="admin-status" class="alert alert-info" role="alert" style="display:none;"></div>
+
+    <div class="table-responsive">
+        <table class="table table-striped" id="admin-table">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Operations chooser -->
+<div class="modal-overlay" id="modal-ops">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-ops">&times;</span>
+        <h4 id="ops-title">Choose action</h4>
+        <div class="d-grid gap-2">
+            <button type="button" class="btn btn-secondary" data-action="list">View all</button>
+            <button type="button" class="btn btn-primary" data-action="add-open">Add</button>
+            <button type="button" class="btn btn-warning" data-action="update-open">Update</button>
+            <button type="button" class="btn btn-danger" data-action="delete-open">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<div class="modal-overlay" id="modal-appointments-add">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-appointments-add">&times;</span>
+        <h4>Add Appointment</h4>
+        <form id="form-appointments-add">
+            <input class="form-control mb-2" name="user_id" placeholder="User ID" required>
+            <input class="form-control mb-2" name="dentist_id" placeholder="Dentist ID" required>
+            <input class="form-control mb-2" name="service_id" placeholder="Service ID" required>
+            <input class="form-control mb-2" name="appointment_date" placeholder="Date (YYYY-MM-DD)" required>
+            <input class="form-control mb-2" name="appointment_time" placeholder="Time (HH:MM:SS)" required>
+            <input class="form-control mb-2" name="status" placeholder="Status" required>
+            <input class="form-control mb-2" name="notes" placeholder="Notes">
+            <button class="btn btn-primary w-100" type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-appointments-update">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-appointments-update">&times;</span>
+        <h4>Update Appointment</h4>
+        <form id="form-appointments-update">
+            <input class="form-control mb-2" name="appointment_id" placeholder="Appointment ID" required>
+            <input class="form-control mb-2" name="user_id" placeholder="User ID" required>
+            <input class="form-control mb-2" name="dentist_id" placeholder="Dentist ID" required>
+            <input class="form-control mb-2" name="service_id" placeholder="Service ID" required>
+            <input class="form-control mb-2" name="appointment_date" placeholder="Date (YYYY-MM-DD)" required>
+            <input class="form-control mb-2" name="appointment_time" placeholder="Time (HH:MM:SS)" required>
+            <input class="form-control mb-2" name="status" placeholder="Status" required>
+            <input class="form-control mb-2" name="notes" placeholder="Notes">
+            <button class="btn btn-warning w-100" type="submit">Update</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-appointments-delete">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-appointments-delete">&times;</span>
+        <h4>Delete Appointment</h4>
+        <form id="form-appointments-delete">
+            <input class="form-control mb-3" name="appointment_id" placeholder="Appointment ID" required>
+            <button class="btn btn-danger w-100" type="submit">Delete</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-users-add">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-users-add">&times;</span>
+        <h4>Add User</h4>
+        <form id="form-users-add">
+            <input class="form-control mb-2" name="full_name" placeholder="Full name" required>
+            <input class="form-control mb-2" name="email" placeholder="Email" required>
+            <input class="form-control mb-2" name="password" type="password" placeholder="Password" required>
+            <select class="form-control mb-2" name="role" required>
+                <option value="">Role</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+            </select>
+            <button class="btn btn-primary w-100" type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-users-update">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-users-update">&times;</span>
+        <h4>Update User</h4>
+        <form id="form-users-update">
+            <input class="form-control mb-2" name="user_id" placeholder="User ID" required>
+            <input class="form-control mb-2" name="full_name" placeholder="Full name" required>
+            <input class="form-control mb-2" name="email" placeholder="Email" required>
+            <input class="form-control mb-2" name="password" type="password" placeholder="Password" required>
+            <select class="form-control mb-2" name="role" required>
+                <option value="">Role</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+            </select>
+            <button class="btn btn-warning w-100" type="submit">Update</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-users-delete">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-users-delete">&times;</span>
+        <h4>Delete User</h4>
+        <form id="form-users-delete">
+            <input class="form-control mb-3" name="user_id" placeholder="User ID" required>
+            <button class="btn btn-danger w-100" type="submit">Delete</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-dentists-add">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-dentists-add">&times;</span>
+        <h4>Add Dentist</h4>
+        <form id="form-dentists-add">
+            <input class="form-control mb-2" name="full_name" placeholder="Full name" required>
+            <input class="form-control mb-2" name="specialization" placeholder="Specialization" required>
+            <button class="btn btn-primary w-100" type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-dentists-update">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-dentists-update">&times;</span>
+        <h4>Update Dentist</h4>
+        <form id="form-dentists-update">
+            <input class="form-control mb-2" name="dentist_id" placeholder="Dentist ID" required>
+            <input class="form-control mb-2" name="full_name" placeholder="Full name" required>
+            <input class="form-control mb-2" name="specialization" placeholder="Specialization" required>
+            <button class="btn btn-warning w-100" type="submit">Update</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-dentists-delete">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-dentists-delete">&times;</span>
+        <h4>Delete Dentist</h4>
+        <form id="form-dentists-delete">
+            <input class="form-control mb-3" name="dentist_id" placeholder="Dentist ID" required>
+            <button class="btn btn-danger w-100" type="submit">Delete</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-services-add">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-services-add">&times;</span>
+        <h4>Add Service</h4>
+        <form id="form-services-add">
+            <input class="form-control mb-2" name="name" placeholder="Name" required>
+            <input class="form-control mb-2" name="description" placeholder="Description" required>
+            <input class="form-control mb-2" name="price" placeholder="Price" required>
+            <button class="btn btn-primary w-100" type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-services-update">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-services-update">&times;</span>
+        <h4>Update Service</h4>
+        <form id="form-services-update">
+            <input class="form-control mb-2" name="service_id" placeholder="Service ID" required>
+            <input class="form-control mb-2" name="name" placeholder="Name" required>
+            <input class="form-control mb-2" name="description" placeholder="Description" required>
+            <input class="form-control mb-2" name="price" placeholder="Price" required>
+            <button class="btn btn-warning w-100" type="submit">Update</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-services-delete">
+    <div class="admin-modal">
+        <span class="close-modal" data-modal="modal-services-delete">&times;</span>
+        <h4>Delete Service</h4>
+        <form id="form-services-delete">
+            <input class="form-control mb-3" name="service_id" placeholder="Service ID" required>
+            <button class="btn btn-danger w-100" type="submit">Delete</button>
+        </form>
+    </div>
+</div>
+
+<script>
+// Hide site footers while on admin view, restore on other views
+(function() {
+    const footers = () => document.querySelectorAll('.bg-dark.text-light.py-5, .container-fluid.text-light.py-4');
+    const toggleFooters = () => {
+        const isAdmin = window.location.hash === '#page10';
+        footers().forEach(el => el.style.display = isAdmin ? 'none' : '');
+    };
+    window.addEventListener('hashchange', toggleFooters);
+    toggleFooters();
+})();
+</script>
+
