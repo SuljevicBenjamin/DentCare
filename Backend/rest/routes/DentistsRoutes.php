@@ -1,6 +1,22 @@
 <?php
 /**
  * @OA\Get(
+ *     path="/dentists/public",
+ *     tags={"Dentists"},
+ *     summary="Get all dentists (public)",
+ *     description="Retrieve a list of all dentists without authentication",
+ *     @OA\Response(
+ *         response=200,
+ *         description="Successfully retrieved dentists"
+ *     )
+ * )
+ */
+Flight::route('GET /dentists/public', function(){
+    Flight::json(Flight::dentistsService()->getAllDentists());
+});
+
+/**
+ * @OA\Get(
  *     path="/dentists",
  *     tags={"Dentists"},
  *     summary="Get all dentists",

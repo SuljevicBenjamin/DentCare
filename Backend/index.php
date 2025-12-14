@@ -39,7 +39,8 @@ Flight::before('start', function () {
 
     $publicRoutes = [
         '/web/backend/auth/login',
-        '/web/backend/auth/register'
+        '/web/backend/auth/register',
+        '/web/backend/dentists/public'
     ];
 
     $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -57,7 +58,7 @@ Flight::before('start', function () {
         exit;
     }
 
-    // Decode and verify the JWT token
+    
     $token = $headers['Authorization'];
     Flight::auth_middleware()->verifyToken($token);
 });

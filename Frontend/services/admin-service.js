@@ -1,6 +1,7 @@
 var AdminService = {
     currentEntity: null,
     _listenersAttached: false,
+    IMGBB_API_KEY: '49d4fee308036395cac2762aca88ce96',
 
     init: function(retryCount = 0) {
         const section = document.getElementById('admin-dashboard');
@@ -18,16 +19,19 @@ var AdminService = {
     },
 
     attachListeners: function() {
-        // clean old listeners
+        
         if (this._clickHandler) document.removeEventListener('click', this._clickHandler, true);
         if (this._submitHandler) document.removeEventListener('submit', this._submitHandler, true);
+
+        
+        this.setupImagePreviews();
 
         this._clickHandler = (e) => {
             const target = e.target;
             const action = target.getAttribute('data-action');
             const entity = target.getAttribute('data-entity');
 
-            // entity button -> open ops modal
+            
             if (action === 'open-ops' && entity) {
                 e.preventDefault();
                 this.currentEntity = entity;
@@ -36,7 +40,7 @@ var AdminService = {
                 return;
             }
 
-            // ops modal buttons
+            
             if (action && !entity && this.currentEntity) {
                 target.setAttribute('data-entity', this.currentEntity);
             }
@@ -47,7 +51,7 @@ var AdminService = {
                 return;
             }
 
-            // close modal via overlay click
+            
             if (target.classList.contains('modal-overlay')) {
                 target.style.display = 'none';
             }
@@ -60,7 +64,7 @@ var AdminService = {
         this._submitHandler = (e) => {
             const form = e.target;
             if (!form.id) return;
-            const parts = form.id.split('-'); // form-<entity>-<action>
+            const parts = form.id.split('-'); 
             if (parts.length !== 3) return;
             const entity = parts[1];
             const action = parts[2];
@@ -96,6 +100,11 @@ var AdminService = {
         }
         const data = Object.fromEntries(new FormData(form).entries());
 
+        
+        if ((entity === 'dentists' || entity === 'services') && (action === 'add' || action === 'update')) {
+            return this.submitWithImage(entity, action, data, form);
+        }
+
         if (action === 'add') return this.add(entity, data);
         if (action === 'update') {
             const id = data[this.idKey(entity)];
@@ -105,6 +114,90 @@ var AdminService = {
             const id = data[this.idKey(entity)];
             return this.remove(entity, id);
         }
+    },
+
+    submitWithImage: function(entity, action, data, form) {
+        const fileInputId = `input-${action}-${entity.slice(0, -1)}-image`;
+        const fileInput = document.getElementById(fileInputId);
+        const file = fileInput ? fileInput.files[0] : null;
+
+        
+        if (action === 'update' && !file) {
+            const id = data[this.idKey(entity)];
+            return this.update(entity, id, data);
+        }
+
+        
+        if (action === 'add' && !file) {
+            this.setStatus('Please select an image file', 'error');
+            return;
+        }
+
+        if (file) {
+            this.setStatus('Uploading image to ImgBB...', 'info');
+            this.uploadToImgBB(file, (imageUrl) => {
+                data.image_url = imageUrl;
+                if (action === 'add') {
+                    this.add(entity, data);
+                } else {
+                    const id = data[this.idKey(entity)];
+                    this.update(entity, id, data);
+                }
+            }, (error) => {
+                this.setStatus('Image upload failed: ' + error, 'error');
+            });
+        }
+    },
+
+    uploadToImgBB: function(file, successCallback, errorCallback) {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        fetch('https://api.imgbb.com/1/upload?key=' + AdminService.IMGBB_API_KEY, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                successCallback(result.data.url);
+            } else {
+                errorCallback(result.status_txt || 'Upload failed');
+            }
+        })
+        .catch(error => {
+            errorCallback('Network error: ' + error.message);
+        });
+    },
+
+    setupImagePreviews: function() {
+        const previewConfigs = [
+            { inputId: 'input-add-dentist-image', previewId: 'preview-add-dentist', imgId: 'preview-add-dentist-img' },
+            { inputId: 'input-update-dentist-image', previewId: 'preview-update-dentist', imgId: 'preview-update-dentist-img' },
+            { inputId: 'input-add-service-image', previewId: 'preview-add-service', imgId: 'preview-add-service-img' },
+            { inputId: 'input-update-service-image', previewId: 'preview-update-service', imgId: 'preview-update-service-img' }
+        ];
+
+        previewConfigs.forEach(config => {
+            const input = document.getElementById(config.inputId);
+            if (input) {
+                input.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            const previewDiv = document.getElementById(config.previewId);
+                            const previewImg = document.getElementById(config.imgId);
+                            if (previewDiv && previewImg) {
+                                previewImg.src = event.target.result;
+                                previewDiv.style.display = 'block';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        });
     },
 
     idKey: function(entity) {
@@ -170,7 +263,7 @@ var AdminService = {
         const inputs = modal.querySelectorAll('input, select');
         inputs.forEach(i => i.value = '');
         modal.style.display = 'flex';
-        // ensure inner content (admin-modal) is visible even with Bootstrap modal styles
+        
         const inner = modal.querySelector('.admin-modal');
         if (inner) inner.style.display = 'block';
     },

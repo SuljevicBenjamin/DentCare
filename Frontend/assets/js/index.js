@@ -37,6 +37,7 @@ app.route({
     view: "page5",
     load: "team.html",
     onReady: function() { nav("pg5"); }
+    
 });
 
 // APPOINTMENT
@@ -73,12 +74,27 @@ app.route({
     onReady: function() { nav("pg9"); }
 });
 
-// ADMIN (only linked for admins)
+// ADMIN 
 app.route({
     view: "page10",
     load: "admin.html",
     onReady: function() { nav("pg10"); if (window.AdminService) AdminService.init(); }
-});
+    (function()
+{
+  if( window.localStorage )
+  {
+    if( !localStorage.getItem('firstLoad') )
+    {
+      localStorage['firstLoad'] = true;
+      window.location.reload();
+    }
+    else
+      localStorage.removeItem('firstLoad');
+  }
+})()
+
+    }
+);
 
 // USER DASHBOARD
 app.route({
