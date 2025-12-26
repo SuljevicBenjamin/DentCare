@@ -35,33 +35,60 @@ Flight::register('servicesService', 'ServicesService');
 Flight::register('usersService', 'UsersService');
 Flight::register('auth_middleware', 'AuthMiddleware');
 
-Flight::before('start', function () {
-
-    $publicRoutes = [
-        '/web/backend/auth/login',
-        '/web/backend/auth/register',
-        '/web/backend/dentists/public'
-    ];
-
-    $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-    if (in_array($requestUri, $publicRoutes)) {
-        return; // skip auth
+Flight::before("start", function(&$params, &$output) {
+    $url = Flight::request()->url;
+    if(
+        strpos($url, '/auth/login') !== false ||
+        strpos($url, '/auth/register') !== false ||
+        strpos($url, '/public/v1/docs') !== false ||
+        strpos($url, '/docs') !== false ||
+        strpos($url, '/dentists/public') !== false ||
+        preg_match('#\.(css|js|png|jpg|jpeg|svg|ico)$#i', $url)
+    ) {
+        return TRUE;
+    } else {
+        try {
+            $token = Flight::request()->getHeader("Authentication");
+            if(!$token) {
+                $token = Flight::request()->getHeader("Authorization");
+            }
+            if(Flight::auth_middleware()->verifyToken($token))
+                return TRUE;
+        } catch (\Exception $e) {
+            Flight::halt(401, $e->getMessage());
+        }
     }
+});
 
-    $headers = getallheaders();
 
-    if (!isset($headers['Authorization'])) {
-        Flight::json([
-            'error' => 'Missing authentication header'
-        ], 401);
-        exit;
-    }
+
+// Flight::before('start', function () {
+
+//     $publicRoutes = [
+//         '/web/backend/auth/login',
+//         '/web/backend/auth/register',
+//         '/web/backend/dentists/public'
+//     ];
+
+//     $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+//     if (in_array($requestUri, $publicRoutes)) {
+//         return; // skip auth
+//     }
+
+//     $headers = getallheaders();
+
+//     if (!isset($headers['Authorization'])) {
+//         Flight::json([
+//             'error' => 'Missing authentication header'
+//         ], 401);
+//         exit;
+//     }
 
     
-    $token = $headers['Authorization'];
-    Flight::auth_middleware()->verifyToken($token);
-});
+//     $token = $headers['Authorization'];
+//     Flight::auth_middleware()->verifyToken($token);
+// });
  
 
 require_once __DIR__ . '/rest/routes/AppointmentsRoutes.php';
