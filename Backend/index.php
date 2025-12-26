@@ -32,7 +32,7 @@ Flight::register('contactMessagesService', 'ContactMessagesService');
 Flight::register('dentistsService', 'DentistsService');
 Flight::register('pricingPlansService', 'PricingPlansService');
 Flight::register('servicesService', 'ServicesService');
-Flight::register('usersService', 'UsersService');
+Flight::register('userService', 'UserService');
 Flight::register('auth_middleware', 'AuthMiddleware');
 
 Flight::before("start", function(&$params, &$output) {
