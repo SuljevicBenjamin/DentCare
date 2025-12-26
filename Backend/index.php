@@ -64,7 +64,6 @@ Flight::before('start', function () {
 });
  
 
-
 require_once __DIR__ . '/rest/routes/AppointmentsRoutes.php';
 require_once __DIR__ . '/rest/routes/ContactMessagesRoutes.php';
 require_once __DIR__ . '/rest/routes/DentistsRoutes.php';
