@@ -41,13 +41,14 @@ var UserService = {
   },
 
   /* =========================
-     INIT
+     INIT (SPApp-safe)
   ========================= */
 
   init: function () {
     var token = UserService.getToken();
     if (token) {
-      window.location.replace("index.html");
+      // ✅ SPApp navigation
+      window.location.hash = "#home";
     }
   },
 
@@ -56,7 +57,7 @@ var UserService = {
   ========================= */
 
   handleLogin: function (e) {
-    e.preventDefault(); // 🔴 STOP PAGE RELOAD
+    e.preventDefault();
 
     var form = document.getElementById("login-form");
     if (!form) return;
@@ -66,7 +67,7 @@ var UserService = {
   },
 
   handleRegister: function (e) {
-    e.preventDefault(); // 🔴 STOP PAGE RELOAD
+    e.preventDefault();
 
     var form = document.getElementById("register-form");
     if (!form) return;
@@ -95,7 +96,8 @@ var UserService = {
           window.NavbarService.refreshOnLogin();
         }
 
-        window.location.replace("index.html");
+        // ✅ SPApp navigation
+        window.location.hash = "#home";
       },
 
       error: function (xhr) {
@@ -114,7 +116,7 @@ var UserService = {
       success: function () {
         toastr.success("Registered successfully. You can log in now.");
         UserService.clearToken();
-        window.location.hash = "login";
+        window.location.hash = "#login";
       },
 
       error: function (xhr) {
@@ -134,6 +136,6 @@ var UserService = {
       window.NavbarService.refreshOnLogout();
     }
 
-    window.location.hash = "login";
+    window.location.hash = "#login";
   }
 };
