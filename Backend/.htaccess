@@ -1,4 +1,18 @@
 RewriteEngine On
+
+# 1. Stop if the request is already index.php
+RewriteCond %{REQUEST_URI} ^/index\.php [NC]
+RewriteRule . - [L]
+
+# 2. If it's not a real file or folder, send to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L,QSA]
+
+
+
+
+`RewriteEngine On
 RewriteBase /web/backend/
 
 # Skip existing files and directories
