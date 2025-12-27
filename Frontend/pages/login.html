@@ -1,34 +1,50 @@
 <div>
-    <div class="col-xl-4 col-lg-6 wow slideInUp mx-auto" data-wow-delay="0.3s">
-        <br>
-        <br>
-        <br>
-        
-        <h2 class="text-center mb-4">Login</h2>
-        
-        <form id="login-form">
-            <div class="row g-3">
-                
-                <div class="col-12">
-                    <input type="email" class="form-control border-0 bg-light px-4" name="email" placeholder="Email" required style="height: 55px;">
-                </div>
-                
-                <div class="col-12">
-                    <input type="password" class="form-control border-0 bg-light px-4" name="password" placeholder="Password" required style="height: 55px;">
-                </div>
-            
-                
-                <div class="col-12">
-                    <button class="btn btn-primary w-100 py-3" type="button" onclick='UserService.handleLogin()'>Login</button>
-                </div>
+  <div class="col-xl-4 col-lg-6 wow slideInUp mx-auto" data-wow-delay="0.3s">
+    <br>
+    <br>
+    <br>
 
-            </div>
-        </form>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-    </div>
+    <h2 class="text-center mb-4">Login</h2>
+
+    <form id="login-form" onsubmit="UserService.handleLogin(event)">
+      <div class="row g-3">
+
+        <div class="col-12">
+          <input
+            type="email"
+            class="form-control border-0 bg-light px-4"
+            name="email"
+            placeholder="Email"
+            required
+            style="height: 55px;"
+          >
+        </div>
+
+        <div class="col-12">
+          <input
+            type="password"
+            class="form-control border-0 bg-light px-4"
+            name="password"
+            placeholder="Password"
+            required
+            style="height: 55px;"
+          >
+        </div>
+
+        <div class="col-12">
+          <button class="btn btn-primary w-100 py-3" type="submit">
+            Login
+          </button>
+        </div>
+
+      </div>
+    </form>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+  </div>
 </div>

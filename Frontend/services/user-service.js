@@ -1,87 +1,141 @@
 var UserService = {
-    getToken: function() {
-      return localStorage.getItem("user_token");
-    },
-    setToken: function(token) {
-      localStorage.setItem("user_token", token);
-    },
-    clearToken: function() {
-      localStorage.removeItem("user_token");
-    },
-    authHeaders: function() {
-      var t = UserService.getToken();
-      return t ? { "Authentication": t } : {};
-    },
-    currentUser: function() {
-      var t = UserService.getToken();
-      return Utils.parseJwt(t)?.user || null;
-    },
-    isLoggedIn: function() {
-      return !!UserService.getToken();
-    },
-    isAdmin: function() {
-      var u = UserService.currentUser();
-      return u && (u.role === 'admin');
-    },
-    init: function () {
-      var token = localStorage.getItem("user_token");
-      if (token && token !== undefined) {
-        window.location.replace("index.html");
-      }
-    },
-    handleLogin: function() {
-      var form = document.getElementById("login-form");
-      if (!form) return;
-      var entity = Object.fromEntries(new FormData(form).entries());
-      UserService.login(entity);
-    },
-    handleRegister: function() {
-      var form = document.getElementById("register-form");
-      if (!form) return;
-      var entity = Object.fromEntries(new FormData(form).entries());
-      console.log("Register form data:", entity);
-      UserService.register(entity);
-    },
-    login: function (entity) {
-      $.ajax({
-        url: Constants.PROJECT_BASE_URL + "auth/login",
-        type: "POST",
-        data: entity,
-        success: function (result) {
-          console.log(result);
-          UserService.setToken(result.data.token);
-          if (window.NavbarService && typeof window.NavbarService.refreshOnLogin === 'function') {
-            window.NavbarService.refreshOnLogin();
-          }
-          window.location.replace("index.html");
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-          toastr.error(XMLHttpRequest?.responseText ?  XMLHttpRequest.responseText : 'Error');
-        },
-      });
-    },
-    register: function(entity) {
-      $.ajax({
-        url: Constants.PROJECT_BASE_URL + "auth/register",
-        type: "POST",
-        data: entity,
-        success: function (result) {
-          toastr.success("Registered successfully. You can log in now.");
-          localStorage.removeItem("user_token");
-          window.location.hash ="login";
-        },
-        error: function (XMLHttpRequest) {
-          toastr.error(XMLHttpRequest?.responseText ? XMLHttpRequest.responseText : 'Error');
+
+  /* =========================
+     TOKEN HANDLING
+  ========================= */
+
+  getToken: function () {
+    return localStorage.getItem("user_token");
+  },
+
+  setToken: function (token) {
+    localStorage.setItem("user_token", token);
+  },
+
+  clearToken: function () {
+    localStorage.removeItem("user_token");
+  },
+
+  authHeaders: function () {
+    var token = UserService.getToken();
+    return token ? { "Authorization": "Bearer " + token } : {};
+  },
+
+  /* =========================
+     USER STATE
+  ========================= */
+
+  currentUser: function () {
+    var token = UserService.getToken();
+    if (!token) return null;
+    return Utils.parseJwt(token)?.user || null;
+  },
+
+  isLoggedIn: function () {
+    return !!UserService.getToken();
+  },
+
+  isAdmin: function () {
+    var user = UserService.currentUser();
+    return user && user.role === "admin";
+  },
+
+  /* =========================
+     INIT (SPApp-safe)
+  ========================= */
+
+  init: function () {
+    var token = UserService.getToken();
+    if (token) {
+      // ✅ SPApp navigation
+      window.location.hash = "#home";
+    }
+  },
+
+  /* =========================
+     FORM HANDLERS
+  ========================= */
+
+  handleLogin: function (e) {
+    e.preventDefault();
+
+    var form = document.getElementById("login-form");
+    if (!form) return;
+
+    var entity = Object.fromEntries(new FormData(form).entries());
+    UserService.login(entity);
+  },
+
+  handleRegister: function (e) {
+    e.preventDefault();
+
+    var form = document.getElementById("register-form");
+    if (!form) return;
+
+    var entity = Object.fromEntries(new FormData(form).entries());
+    UserService.register(entity);
+  },
+
+  /* =========================
+     API CALLS
+  ========================= */
+
+  login: function (entity) {
+    $.ajax({
+      url: Constants.PROJECT_BASE_URL + "auth/login",
+      type: "POST",
+      data: JSON.stringify(entity),
+      contentType: "application/json",
+
+      success: function (result) {
+        console.log("LOGIN SUCCESS:", result);
+
+        UserService.setToken(result.data.token);
+
+        if (window.NavbarService && typeof window.NavbarService.refreshOnLogin === "function") {
+          window.NavbarService.refreshOnLogin();
         }
-      });
-    },
-   
-   
-    logout: function () {
-      localStorage.clear();
-      if (window.NavbarService && typeof window.NavbarService.refreshOnLogout === 'function') {
-        window.NavbarService.refreshOnLogout();
+
+        // ✅ SPApp navigation
+        window.location.hash = "#home";
+      },
+
+      error: function (xhr) {
+        toastr.error(xhr?.responseJSON?.message || "Login failed");
       }
-      window.location.hash ="login";
-    },
-}
+    });
+  },
+
+  register: function (entity) {
+    $.ajax({
+      url: Constants.PROJECT_BASE_URL + "auth/register",
+      type: "POST",
+      data: JSON.stringify(entity),
+      contentType: "application/json",
+
+      success: function () {
+        toastr.success("Registered successfully. You can log in now.");
+        UserService.clearToken();
+        window.location.hash = "#login";
+      },
+
+      error: function (xhr) {
+        toastr.error(xhr?.responseJSON?.message || "Registration failed");
+      }
+    });
+  },
+
+  /* =========================
+     LOGOUT
+  ========================= */
+
+  logout: function () {
+    UserService.clearToken();
+
+    if (window.NavbarService && typeof window.NavbarService.refreshOnLogout === "function") {
+      window.NavbarService.refreshOnLogout();
+    }
+
+    window.location.hash = "#login";
+  }
+};
